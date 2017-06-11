@@ -13,7 +13,7 @@
     @history
     ))
 
-(facts
+#_(facts
   "processing the payments in parallel"
   (fact
     "the code supports concurrency"
