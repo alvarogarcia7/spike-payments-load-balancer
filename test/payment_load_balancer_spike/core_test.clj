@@ -14,6 +14,10 @@
   [repository rules payments]
   (doall (map #(process repository rules %) payments)))
 
+(defn
+  sum-amounts
+  [history]
+  (reduce merge (map (fn a [[k v]] {k (apply + (map :amount v))}) history)))
 
 (def
   test-rules
@@ -29,13 +33,16 @@
                     (sort decreasing-by-size)
                     first
                     :key)))
+   :by-percentages (fn [objective history]
+                     (let [
+                             amounts (sum-amounts history)
+                             total-payments (reduce (fn [acc [k v]] (+ acc v)) 1 amounts)
+                             percentages (reduce merge (map (fn [[k v]] {k (/ v total-payments)}) amounts))
+                             differences (reduce merge (map (fn [[[b1 v1] [b2 v2]]] {b1 (Math/abs (- v1 v2))}) (map #(-> [%1 %2]) (sort percentages) (sort objective))))
+                             bucket-most-different (key (first (reduce (fn [[k-acc v-acc] [k-ele v-ele]] (if (> v-ele v-acc) {k-ele v-ele} {k-acc v-acc})) differences)))]
+                         bucket-most-different))
    }
   )
-
-(defn
-  sum-amounts
-  [history]
-  (reduce merge (map (fn a [[k v]] {k (apply + (map :amount v))}) history)))
 
 
 (facts
@@ -106,17 +113,11 @@
       "two buckets"
       (let [history (atom {:bucket1 [] :bucket2 []})
             payments (fn [amount]
-                       (map #(-> {:id % :amount 1}) (range amount)))]
+                       (map #(-> {:id % :amount 1}) (range amount)))
+            objective {:bucket1 0.60 :bucket2 0.40}]
 
         (process-payments history
-                          [{:fn (fn [history]
-                                  (let [objective {:bucket1 0.60 :bucket2 0.40}
-                                        amounts (sum-amounts history)
-                                        total-payments (reduce (fn [acc [k v]] (+ acc v)) 1 amounts)
-                                        percentages (reduce merge (map (fn [[k v]] {k (/ v total-payments)}) amounts))
-                                        differences (reduce merge (map (fn [[[b1 v1] [b2 v2]]] {b1 (Math/abs (- v1 v2))}) (map #(-> [%1 %2]) (sort percentages) (sort objective))))
-                                        bucket-most-different (key (first (reduce (fn [[k-acc v-acc] [k-ele v-ele]] (if (> v-ele v-acc) {k-ele v-ele} {k-acc v-acc})) differences)))]
-                                    bucket-most-different))}]
+                          [{:fn (fn [history] ((get test-rules :by-percentages) objective history))}]
                           (payments 10))
         (let [amounts (sum-amounts @history)]
           (get amounts :bucket1) => 6
