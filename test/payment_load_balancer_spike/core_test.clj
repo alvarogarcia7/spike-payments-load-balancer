@@ -14,16 +14,14 @@
   [repository rules payments]
   (doall (map #(process repository rules %) payments)))
 
-(defn
-  key-and-amount
-  [history]
-  (map (fn [[k v]] {:key k :sum (apply + (map #(get % :amount 0) v))}) history))
 
 (def
   test-rules
   {:only-5-in-bucket2 (fn [history] (if (>= (count (get history :bucket2)) 5) :bucket1 :bucket2))
    :by-amount (fn [history]
-                (let [decreasing-by-size #(> (:sum %2) (:sum %1))]
+                (let [decreasing-by-size #(> (:sum %2) (:sum %1))
+                      key-and-amount (fn [history]
+                        (map (fn [[k v]] {:key k :sum (apply + (map #(get % :amount 0) v))}) history))]
                   (->>
                     history
                     key-and-amount
