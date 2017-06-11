@@ -16,7 +16,7 @@
 
 (defn
   process
-  [candidate repository]
+  [rules candidate repository]
   (let [add-to-bucket (fn [bucket-name] (swap! repository update-in [bucket-name] conj candidate))]
     (add-to-bucket (smallest-bucket @repository))))
 
@@ -30,6 +30,7 @@
   (fact
     "splitting evenly in two buckets"
     (let [repository (atom {:bucket2 [] :bucket1 []})
+          process (partial process [{:fn smallest-bucket}])
           _ (doall
               (->>
                 (generate-payments 100)
