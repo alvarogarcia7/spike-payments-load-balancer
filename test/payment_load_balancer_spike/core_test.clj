@@ -3,18 +3,12 @@
   (:require
     [payment-load-balancer-spike.core :refer :all]))
 
-(def
-  payments
-  (atom {:bucket1 [] :bucket2 []}))
-
 (defn
   process
   [candidate repository]
   (let [next-bucket (fn [m] (:key (first (sort #(> (:length %2) (:length %1)) (reduce (fn [acc [k v]] (conj acc {:key k :length (count v)})) '() m)))))
         new-bucket (update @repository (next-bucket @repository) conj candidate)]
     (reset! repository new-bucket)
-    ;(println @repository)
-    ;(println (str "received " candidate))
     ))
 
 (defn
