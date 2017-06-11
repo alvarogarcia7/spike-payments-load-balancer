@@ -36,7 +36,6 @@
                 (generate-payments 100)
                 (map #(process % repository))))]
       (fact
-        "splits evenly by number of payments"
         (count (get @repository :bucket1)) => 50
         (count (get @repository :bucket2)) => 50
         ))))
