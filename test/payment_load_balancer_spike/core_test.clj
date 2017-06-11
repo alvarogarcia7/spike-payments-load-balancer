@@ -30,15 +30,15 @@
   "about the rules"
   (fact
     "add 100 payments"
-    (let [payments (atom {:bucket2 [] :bucket1 []})
+    (let [repository (atom {:bucket2 [] :bucket1 []})
           _ (doall
               (->>
                 (generate-payments 100)
-                (map #(process % payments))))]
+                (map #(process % repository))))]
       (fact
         "splits evenly by number of payments"
-        (count (get @payments :bucket1)) => 50
-        (count (get @payments :bucket2)) => 50
+        (count (get @repository :bucket1)) => 50
+        (count (get @repository :bucket2)) => 50
         ))))
 
 
