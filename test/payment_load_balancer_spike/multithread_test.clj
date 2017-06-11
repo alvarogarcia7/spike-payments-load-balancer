@@ -1,13 +1,24 @@
 (ns payment-load-balancer-spike.multithread-test
+  (:use [midje.sweet])
   (:require
-    [payment-load-balancer-spike.core-test :refer :all]))
+    [payment-load-balancer-spike.core-test :refer :all]
+    [payment-load-balancer-spike.core :refer :all]))
 
 
-(defn run [nthreads niters]
-  (let [history (atom {:bucket2 []})
-        swap #(process-payments history
+(defn proces-payments-in-parallel [nthreads niters history]
+  (let [process-payment #(process-payments history
                           [{:fn (get test-rules :only-5-in-bucket2)}]
                           (generate-payments 10))]
-    (dorun (apply pcalls (repeat nthreads #(dotimes [_ niters] (swap)))))
+    (dorun (apply pcalls (repeat nthreads #(dotimes [_ niters] (process-payment)))))
     @history
     ))
+
+(facts
+  "processing the payments in parallel"
+  (fact
+    "the code supports concurrency"
+    (let [history (atom {})]
+      (proces-payments-in-parallel 10 100 history)
+      (count (get @history :bucket2)) => 5)
+    )
+  )
