@@ -11,7 +11,8 @@
                           (map (fn [[bucket-name payments]] {:key bucket-name :length (count payments)}) history))
            decreasing-by-size #(> (:length %2) (:length %1))]
        (->>
-         (key-and-size history)
+         history
+         key-and-size
          (sort decreasing-by-size)
          first
          :key)))})
