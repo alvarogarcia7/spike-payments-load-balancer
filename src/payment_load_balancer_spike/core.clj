@@ -4,7 +4,7 @@
 (defn
   key-and-size
   [history]
-  (map (fn [[key values]] {:key key :length (count values)}) history))
+  (map (fn [[bucket-name payments]] {:key bucket-name :length (count payments)}) history))
 
 (def
   rules
