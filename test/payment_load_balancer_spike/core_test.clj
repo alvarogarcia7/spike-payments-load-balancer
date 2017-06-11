@@ -4,10 +4,14 @@
     [payment-load-balancer-spike.core :refer :all]))
 
 (defn
+  next-bucket
+  [m]
+  (:key (first (sort #(> (:length %2) (:length %1)) (reduce (fn [acc [k v]] (conj acc {:key k :length (count v)})) '() m)))))
+
+(defn
   process
   [candidate repository]
-  (let [next-bucket (fn [m] (:key (first (sort #(> (:length %2) (:length %1)) (reduce (fn [acc [k v]] (conj acc {:key k :length (count v)})) '() m)))))
-        new-bucket (update @repository (next-bucket @repository) conj candidate)]
+  (let [new-bucket (update @repository (next-bucket @repository) conj candidate)]
     (reset! repository new-bucket)
     ))
 
