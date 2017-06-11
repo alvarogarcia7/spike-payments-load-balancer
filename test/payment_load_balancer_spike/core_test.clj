@@ -16,7 +16,7 @@
   (doall (map #(process rules % repository) payments)))
 
 (def
-  rules
+  test-rules
   {:only-5-in-bucket2 (fn [history] (if (>= (count (get history :bucket2)) 5) :bucket1 :bucket2))})
 
 (facts
@@ -27,7 +27,7 @@
       "when both buckets are defined"
       (let [history (atom {:bucket2 [] :bucket1 []})]
         (process-payments history
-                          [{:fn smallest-bucket}]
+                          [{:fn (get rules :smallest-bucket)}]
                           (generate-payments 100))
         (count (get @history :bucket1)) => 50
         (count (get @history :bucket2)) => 50
@@ -37,7 +37,7 @@
       "when one of the buckets is not defined"
       (let [history (atom {:bucket2 []})]
         (process-payments history
-                          [{:fn (get rules :only-5-in-bucket2)}]
+                          [{:fn (get test-rules :only-5-in-bucket2)}]
                           (generate-payments 10))
         (count (get @history :bucket1)) => 5
         (count (get @history :bucket2)) => 5
@@ -46,7 +46,7 @@
       "when none of the buckets is defined"
       (let [history (atom {})]
         (process-payments history
-                          [{:fn (get rules :only-5-in-bucket2)}]
+                          [{:fn (get test-rules :only-5-in-bucket2)}]
                           (generate-payments 10))
         (count (get @history :bucket1)) => 5
         (count (get @history :bucket2)) => 5

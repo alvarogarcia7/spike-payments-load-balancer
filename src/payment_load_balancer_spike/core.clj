@@ -1,16 +1,17 @@
 (ns payment-load-balancer-spike.core
   (:gen-class))
 
-(defn
-  smallest-bucket
-  [history]
-  (let [key-and-size (reduce (fn [acc [k v]] (conj acc {:key k :length (count v)})) '() history)
-        decreasing-by-size #(> (:length %2) (:length %1))]
-    (->>
-      key-and-size
-      (sort decreasing-by-size)
-      first
-      :key)))
+(def
+  rules
+  {:smallest-bucket
+   (fn [history]
+     (let [key-and-size (reduce (fn [acc [k v]] (conj acc {:key k :length (count v)})) '() history)
+           decreasing-by-size #(> (:length %2) (:length %1))]
+       (->>
+         key-and-size
+         (sort decreasing-by-size)
+         first
+         :key)))})
 
 (defn
   process
