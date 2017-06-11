@@ -7,10 +7,10 @@
   next-bucket
   [m]
   (let [key-and-size (reduce (fn [acc [k v]] (conj acc {:key k :length (count v)})) '() m)
-        by-size #(> (:length %2) (:length %1))]
+        decreasing-by-size #(> (:length %2) (:length %1))]
     (->>
       key-and-size
-      (sort by-size)
+      (sort decreasing-by-size)
       first
       :key)))
 
