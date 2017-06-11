@@ -17,8 +17,12 @@
 (defn
   process
   [rules candidate repository]
-  (let [add-to-bucket (fn [bucket-name] (swap! repository update-in [bucket-name] conj candidate))]
-    (add-to-bucket ((:fn (first rules)) @repository))))
+  (let [bucket-name ((:fn (first rules)) @repository)
+        _ (if (find @repository bucket-name)
+            nil
+          (swap! repository assoc bucket-name []))]
+    (let [add-to-bucket (fn [bucket-name] (swap! repository update-in [bucket-name] conj candidate))]
+      (add-to-bucket bucket-name))))
 
 (defn
   generate-payments
@@ -42,12 +46,11 @@
     (fact
       "when one of the buckets is not defined"
       (let [repository1 (atom {:bucket2 []})
-            process (partial process [{:fn (fn [m] (if (>= 5 (count (get m :bucket2))) :bucket1 :bucket2))}])
+            process (partial process [{:fn (fn [m] (if (>= (count (get m :bucket2)) 5) :bucket1 :bucket2))}])
             _ (doall
                 (->>
                   (generate-payments 10)
                   (map #(process % repository1))))]
-        (println @repository1)
         (count (get @repository1 :bucket1)) => 5
         (count (get @repository1 :bucket2)) => 5))
 
