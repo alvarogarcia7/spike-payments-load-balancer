@@ -82,7 +82,18 @@
         (apply + (map :amount (get @history :bucket1))) => 5
         (apply + (map :amount (get @history :bucket2))) => 5
         ))
-    ))
+    (fact
+      "with the payments having different amounts"
+      (let [history (atom {:bucket1 [] :bucket2 []})
+            payments (fn [amount]
+                       (map #(-> {:id % :amount %}) (range amount)))]
+
+        (process-payments history
+                          [{:fn (get test-rules :by-amount)}]
+                          (payments 10))
+        (apply + (map :amount (get @history :bucket1))) => 25
+        (apply + (map :amount (get @history :bucket2))) => 20
+        ))))
 
 
 
