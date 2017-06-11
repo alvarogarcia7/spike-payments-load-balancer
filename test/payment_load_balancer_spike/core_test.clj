@@ -52,6 +52,16 @@
                   (map #(process % repository1))))]
         (count (get @repository1 :bucket1)) => 5
         (count (get @repository1 :bucket2)) => 5))
+    (fact
+      "when none of the buckets is defined"
+      (let [repository1 (atom {})
+            process (partial process [{:fn (fn [m] (if (>= (count (get m :bucket2)) 5) :bucket1 :bucket2))}])
+            _ (doall
+                (->>
+                  (generate-payments 10)
+                  (map #(process % repository1))))]
+        (count (get @repository1 :bucket1)) => 5
+        (count (get @repository1 :bucket2)) => 5))
 
     ))
 
