@@ -18,9 +18,8 @@
   process
   [rules candidate repository]
   (let [bucket-name ((:fn (first rules)) @repository)
-        _ (if (find @repository bucket-name)
-            nil
-          (swap! repository assoc bucket-name []))]
+        _ (if-not (find @repository bucket-name)
+            (swap! repository assoc bucket-name []))]
     (let [add-to-bucket (fn [bucket-name] (swap! repository update-in [bucket-name] conj candidate))]
       (add-to-bucket bucket-name))))
 
