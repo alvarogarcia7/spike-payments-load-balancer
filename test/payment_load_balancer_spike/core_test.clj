@@ -92,6 +92,7 @@
                           (payments 10))
         (let [amounts (sum-amounts @history)]
           (get amounts :bucket1) => 25
+          (get amounts :bucket2) => 20
           (apply + (map :amount (get @history :bucket1))) => 25
           (apply + (map :amount (get @history :bucket2))) => 20)
         ))
