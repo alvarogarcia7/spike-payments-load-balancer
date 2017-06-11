@@ -10,11 +10,6 @@
   (map #(-> {:id %}) (range number)))
 
 (defn
-  generate-payments-with-fixed-amount
-  [number]
-  (map #(-> {:id % :amount 1}) (range number)))
-
-(defn
   process-payments
   [repository rules payments]
   (doall (map #(process repository rules %) payments)))
@@ -74,11 +69,13 @@
     )
   (fact
     "splitting evenly in two buckets, by bucket amount"
-    (let [history (atom {:bucket1 [] :bucket2 []})]
+    (let [history (atom {:bucket1 [] :bucket2 []})
+          payments (fn [amount]
+            (map #(-> {:id % :amount 1}) (range amount)))]
 
       (process-payments history
                         [{:fn (get test-rules :by-amount)}]
-                        (generate-payments-with-fixed-amount 10))
+                        (payments 10))
       (println @history)
       (apply + (map :amount (get @history :bucket1))) => 5
       (apply + (map :amount (get @history :bucket2))) => 5
