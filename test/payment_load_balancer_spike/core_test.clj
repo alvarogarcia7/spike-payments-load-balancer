@@ -24,7 +24,7 @@
   (fact
     "splitting evenly in two buckets"
     (fact
-      "when both buckets are defined"
+      "when both buckets are defined in advance"
       (let [history (atom {:bucket2 [] :bucket1 []})]
         (process-payments history
                           [{:fn (get rules :smallest-bucket)}]
@@ -34,7 +34,7 @@
         )
       )
     (fact
-      "when one of the buckets is not defined"
+      "when one of the buckets is not defined in advance"
       (let [history (atom {:bucket2 []})]
         (process-payments history
                           [{:fn (get test-rules :only-5-in-bucket2)}]
