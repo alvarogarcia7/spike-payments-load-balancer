@@ -17,7 +17,7 @@
 
 (def
   rules
-  {:only-5-in-bucket2 (fn [m] (if (>= (count (get m :bucket2)) 5) :bucket1 :bucket2))})
+  {:only-5-in-bucket2 (fn [history] (if (>= (count (get history :bucket2)) 5) :bucket1 :bucket2))})
 
 (facts
   "about the rules"
