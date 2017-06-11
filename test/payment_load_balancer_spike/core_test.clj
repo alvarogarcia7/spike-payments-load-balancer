@@ -37,7 +37,6 @@
                 (map #(process % payments100))))]
       (fact
         "splits evenly by number of payments"
-        (println @payments100)
         (count (get @payments100 :bucket1)) => 50
         (count (get @payments100 :bucket2)) => 50
         ))))
