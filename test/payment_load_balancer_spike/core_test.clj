@@ -32,6 +32,11 @@
    }
   )
 
+(defn
+  sum-amounts
+  [history]
+  (reduce merge (map (fn a [[k v]] {k (apply + (map :amount v))}) history)))
+
 
 (facts
   "about the rules"
@@ -84,8 +89,7 @@
       "with the payments having different amounts"
       (let [history (atom {:bucket1 [] :bucket2 []})
             payments (fn [amount]
-                       (map #(-> {:id % :amount %}) (range amount)))
-            sum-amounts (fn [history] (reduce merge (map (fn a [[k v]] {k (apply + (map :amount v))}) history)))]
+                       (map #(-> {:id % :amount %}) (range amount)))]
 
         (process-payments history
                           [{:fn (get test-rules :by-amount)}]
