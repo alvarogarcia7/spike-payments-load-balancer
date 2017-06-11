@@ -29,7 +29,7 @@
 (facts
   "about the rules"
   (fact
-    "add 100 payments"
+    "splitting evenly in two buckets"
     (let [repository (atom {:bucket2 [] :bucket1 []})
           _ (doall
               (->>
