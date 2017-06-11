@@ -6,7 +6,9 @@
 (defn
   next-bucket
   [m]
-  (:key (first (sort #(> (:length %2) (:length %1)) (reduce (fn [acc [k v]] (conj acc {:key k :length (count v)})) '() m)))))
+  (let [key-and-size (reduce (fn [acc [k v]] (conj acc {:key k :length (count v)})) '() m)
+        by-size #(> (:length %2) (:length %1))]
+    (:key (first (sort by-size key-and-size)))))
 
 (defn
   process
