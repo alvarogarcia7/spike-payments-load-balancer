@@ -29,14 +29,28 @@
   "about the rules"
   (fact
     "splitting evenly in two buckets"
-    (let [repository (atom {:bucket2 [] :bucket1 []})
-          process (partial process [{:fn smallest-bucket}])
-          _ (doall
-              (->>
-                (generate-payments 100)
-                (map #(process % repository))))]
-      (count (get @repository :bucket1)) => 50
-      (count (get @repository :bucket2)) => 50
-      )))
+    (fact
+      "when both buckets are defined"
+      (let [repository (atom {:bucket2 [] :bucket1 []})
+            process (partial process [{:fn smallest-bucket}])
+            _ (doall
+                (->>
+                  (generate-payments 100)
+                  (map #(process % repository))))]
+        (count (get @repository :bucket1)) => 50
+        (count (get @repository :bucket2)) => 50))
+    (fact
+      "when one of the buckets is not defined"
+      (let [repository1 (atom {:bucket2 []})
+            process (partial process [{:fn (fn [m] (if (>= 5 (count (get m :bucket2))) :bucket1 :bucket2))}])
+            _ (doall
+                (->>
+                  (generate-payments 10)
+                  (map #(process % repository1))))]
+        (println @repository1)
+        (count (get @repository1 :bucket1)) => 5
+        (count (get @repository1 :bucket2)) => 5))
+
+    ))
 
 
