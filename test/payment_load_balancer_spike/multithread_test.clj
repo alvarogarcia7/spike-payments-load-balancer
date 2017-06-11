@@ -17,8 +17,9 @@
   "processing the payments in parallel"
   (fact
     "the code supports concurrency"
-    (let [history (atom {})]
-      (proces-payments-in-parallel 10 100 history)
-      (count (get @history :bucket2)) => 5)
+    (dotimes [_ 10]
+      (let [history (atom {})]
+        (proces-payments-in-parallel 10 100 history)
+        (count (get @history :bucket2)) => 5))
     )
   )
