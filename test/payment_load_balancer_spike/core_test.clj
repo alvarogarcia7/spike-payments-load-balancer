@@ -78,7 +78,6 @@
         (process-payments history
                           [{:fn (get test-rules :by-amount)}]
                           (payments 10))
-        (println @history)
         (apply + (map :amount (get @history :bucket1))) => 5
         (apply + (map :amount (get @history :bucket2))) => 5
         ))
