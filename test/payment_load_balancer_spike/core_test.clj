@@ -23,7 +23,7 @@
 (defn
   generate-payments
   [number]
-  (map #(-> {:id %}) (range 100)))
+  (map #(-> {:id %}) (range number)))
 
 (facts
   "about the rules"
