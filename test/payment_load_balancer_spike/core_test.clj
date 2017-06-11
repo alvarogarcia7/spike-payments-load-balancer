@@ -69,17 +69,19 @@
     )
   (fact
     "splitting evenly in two buckets, by bucket amount"
-    (let [history (atom {:bucket1 [] :bucket2 []})
-          payments (fn [amount]
-            (map #(-> {:id % :amount 1}) (range amount)))]
+    (fact
+      "with the payments having the same amount"
+      (let [history (atom {:bucket1 [] :bucket2 []})
+            payments (fn [amount]
+                       (map #(-> {:id % :amount 1}) (range amount)))]
 
-      (process-payments history
-                        [{:fn (get test-rules :by-amount)}]
-                        (payments 10))
-      (println @history)
-      (apply + (map :amount (get @history :bucket1))) => 5
-      (apply + (map :amount (get @history :bucket2))) => 5
-      )
+        (process-payments history
+                          [{:fn (get test-rules :by-amount)}]
+                          (payments 10))
+        (println @history)
+        (apply + (map :amount (get @history :bucket1))) => 5
+        (apply + (map :amount (get @history :bucket2))) => 5
+        ))
     ))
 
 
