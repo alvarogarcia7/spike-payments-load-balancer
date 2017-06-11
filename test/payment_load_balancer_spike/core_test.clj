@@ -17,9 +17,7 @@
 (defn
   process
   [candidate repository]
-  (let [new-bucket (update @repository (smallest-bucket @repository) conj candidate)]
-    (reset! repository new-bucket)
-    ))
+  (swap! repository update-in [(smallest-bucket @repository)] conj candidate))
 
 (defn
   generate-payments
