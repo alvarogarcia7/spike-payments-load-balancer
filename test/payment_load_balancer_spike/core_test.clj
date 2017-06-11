@@ -22,7 +22,7 @@
     ))
 
 (defn
-  add-payments
+  generate-payments
   [number]
   (map #(-> {:id %}) (range 100)))
 
@@ -33,7 +33,7 @@
     (let [payments100 (atom {:bucket2 [] :bucket1 []})
           _ (doall
               (->>
-                (add-payments 100)
+                (generate-payments 100)
                 (map #(process % payments100))))]
       (fact
         "splits evenly by number of payments"
