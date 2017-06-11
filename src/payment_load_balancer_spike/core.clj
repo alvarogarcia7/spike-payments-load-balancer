@@ -3,8 +3,8 @@
 
 (defn
   smallest-bucket
-  [m]
-  (let [key-and-size (reduce (fn [acc [k v]] (conj acc {:key k :length (count v)})) '() m)
+  [history]
+  (let [key-and-size (reduce (fn [acc [k v]] (conj acc {:key k :length (count v)})) '() history)
         decreasing-by-size #(> (:length %2) (:length %1))]
     (->>
       key-and-size
