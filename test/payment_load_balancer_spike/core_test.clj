@@ -19,9 +19,10 @@
   test-rules
   {:only-5-in-bucket2 (fn [history] (if (>= (count (get history :bucket2)) 5) :bucket1 :bucket2))
    :by-amount (fn [history]
-                (let [decreasing-by-size #(> (:sum %2) (:sum %1))
+                (let [field :sum
+                      decreasing-by-size #(> (field %2) (field %1))
                       key-and-amount (fn [history]
-                        (map (fn [[k v]] {:key k :sum (apply + (map #(get % :amount 0) v))}) history))]
+                        (map (fn [[k v]] {:key k field (apply + (map #(get % :amount 0) v))}) history))]
                   (->>
                     history
                     key-and-amount
