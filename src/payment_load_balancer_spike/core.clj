@@ -4,7 +4,7 @@
 (defn
   key-and-size
   [history]
-  (reduce (fn [acc [k v]] (conj acc {:key k :length (count v)})) '() history))
+  (map (fn [[k v]] {:key k :length (count v)}) history))
 
 (def
   rules
