@@ -7,11 +7,11 @@
   rules
   {:smallest-bucket
    (fn [history]
-     (let [key-and-size ((fn [history]
-                           (map (fn [[bucket-name payments]] {:key bucket-name :length (count payments)}) history)) history)
+     (let [key-and-size (fn [history]
+                          (map (fn [[bucket-name payments]] {:key bucket-name :length (count payments)}) history))
            decreasing-by-size #(> (:length %2) (:length %1))]
        (->>
-         key-and-size
+         (key-and-size history)
          (sort decreasing-by-size)
          first
          :key)))})
