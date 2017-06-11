@@ -82,8 +82,12 @@
         (process-payments history
                           [{:fn (get test-rules :by-amount)}]
                           (payments 10))
-        (apply + (map :amount (get @history :bucket1))) => 5
-        (apply + (map :amount (get @history :bucket2))) => 5
+        (let [amounts (sum-amounts @history)]
+          (get amounts :bucket1) => 5
+          (get amounts :bucket2) => 5
+          (apply + (map :amount (get @history :bucket1))) => 5
+          (apply + (map :amount (get @history :bucket2))) => 5
+          )
         ))
     (fact
       "with the payments having different amounts"
