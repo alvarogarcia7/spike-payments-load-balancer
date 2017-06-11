@@ -85,10 +85,7 @@
         (let [amounts (sum-amounts @history)]
           (get amounts :bucket1) => 5
           (get amounts :bucket2) => 5
-          (apply + (map :amount (get @history :bucket1))) => 5
-          (apply + (map :amount (get @history :bucket2))) => 5
-          )
-        ))
+          )))
     (fact
       "with the payments having different amounts"
       (let [history (atom {:bucket1 [] :bucket2 []})
