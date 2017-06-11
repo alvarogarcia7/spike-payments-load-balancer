@@ -4,7 +4,7 @@
 (defn
   key-and-size
   [history]
-  (map (fn [[k v]] {:key k :length (count v)}) history))
+  (map (fn [[key values]] {:key key :length (count values)}) history))
 
 (def
   rules
