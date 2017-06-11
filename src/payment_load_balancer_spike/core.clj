@@ -1,16 +1,14 @@
 (ns payment-load-balancer-spike.core
   (:gen-class))
 
-(defn
-  key-and-size
-  [history]
-  (map (fn [[bucket-name payments]] {:key bucket-name :length (count payments)}) history))
+
 
 (def
   rules
   {:smallest-bucket
    (fn [history]
-     (let [key-and-size (key-and-size history)
+     (let [key-and-size ((fn [history]
+                           (map (fn [[bucket-name payments]] {:key bucket-name :length (count payments)}) history)) history)
            decreasing-by-size #(> (:length %2) (:length %1))]
        (->>
          key-and-size
