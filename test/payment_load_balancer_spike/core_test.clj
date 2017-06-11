@@ -13,7 +13,7 @@
 (defn
   process-payments
   [repository rules payments]
-  (doall (map #(process rules % repository) payments)))
+  (doall (map #(process repository rules %) payments)))
 
 (def
   test-rules

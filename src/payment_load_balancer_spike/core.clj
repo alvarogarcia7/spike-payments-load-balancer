@@ -15,7 +15,7 @@
 
 (defn
   process
-  [rules candidate repository]
+  [repository rules candidate]
   (let [bucket-name ((:fn (first rules)) @repository)
         _ (if-not (find @repository bucket-name)
             (swap! repository assoc bucket-name []))]
