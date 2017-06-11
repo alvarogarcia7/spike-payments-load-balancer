@@ -4,7 +4,7 @@
     [payment-load-balancer-spike.core :refer :all]))
 
 (defn
-  next-bucket
+  smallest-bucket
   [m]
   (let [key-and-size (reduce (fn [acc [k v]] (conj acc {:key k :length (count v)})) '() m)
         decreasing-by-size #(> (:length %2) (:length %1))]
@@ -17,7 +17,7 @@
 (defn
   process
   [candidate repository]
-  (let [new-bucket (update @repository (next-bucket @repository) conj candidate)]
+  (let [new-bucket (update @repository (smallest-bucket @repository) conj candidate)]
     (reset! repository new-bucket)
     ))
 
