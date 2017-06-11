@@ -17,7 +17,8 @@
 (defn
   process
   [candidate repository]
-  (swap! repository update-in [(smallest-bucket @repository)] conj candidate))
+  (let [add-to-bucket (fn [bucket-name] (swap! repository update-in [bucket-name] conj candidate))]
+    (add-to-bucket (smallest-bucket @repository))))
 
 (defn
   generate-payments
