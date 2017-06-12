@@ -38,8 +38,11 @@
                               total-payments (reduce (fn [acc [k v]] (+ acc v)) 1 amounts)
                               percentages (reduce merge (map (fn [[k v]] {k (/ v total-payments)}) amounts))
                               differences (reduce merge (map (fn [[[b1 v1] [b2 v2]]] {b1 (Math/abs (- v1 v2))}) (map #(-> [%1 %2]) (sort percentages) (sort objective))))
-                              bucket-most-different (key (first (reduce (fn [[k-acc v-acc] [k-ele v-ele]] (if (> v-ele v-acc) {k-ele v-ele} {k-acc v-acc})) differences)))]
+                              value (reduce (fn [[k-acc v-acc] [k-ele v-ele]]
+                                              (if (> v-ele v-acc) [k-ele v-ele] [k-acc v-acc])) differences)
+                              bucket-most-different (first value)]
                           bucket-most-different))
+
    }
   )
 
@@ -121,6 +124,22 @@
         (let [amounts (sum-amounts @history)]
           (get amounts :bucket1) => 6
           (get amounts :bucket2) => 4
+          )))
+
+    (fact
+      "three buckets"
+      (let [history (atom {:bucket1 [] :bucket2 [] :bucket3 []})
+            payments (fn [amount]
+                       (map #(-> {:id % :amount 1}) (range amount)))
+            objective {:bucket1 0.60 :bucket2 0.20 :bucket3 0.20}]
+
+        (process-payments history
+                          [{:fn (fn [history] ((get test-rules :by-percentages) objective history))}]
+                          (payments 10))
+        (let [amounts (sum-amounts @history)]
+          (get amounts :bucket1) => 6
+          (get amounts :bucket2) => 2
+          (get amounts :bucket3) => 2
           )))
 
     ))
